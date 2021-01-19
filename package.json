@@ -16,6 +16,8 @@
     "express-session": "^1.17.1",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "node-telegram-bot-api": "^0.51.0"
+    "node-telegram-bot-api": "^0.51.0",
+    "nodeplotlib": "^0.7.1",
+    "vega": "^5.18.0"
   }
 }

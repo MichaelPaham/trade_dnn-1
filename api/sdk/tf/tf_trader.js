@@ -4,7 +4,8 @@ const tf = require('@tensorflow/tfjs-node');
 
 async function tf_predict(dt){
     try{
-        const model = await tf.loadGraphModel('https://drive.google.com/file/d/12DcwG20MifW8s0ME0i2JeZM7X6KNw9pY/view?usp=sharing');
+        const path = 'https://raw.githubusercontent.com/zendi014/trade_dnn/main/public/ex_model/model.json';
+        const model = await tf.loadGraphModel(path);
         
         sample = tf.tensor2d(dt, [1, 5]);
         predict = model.predict(
