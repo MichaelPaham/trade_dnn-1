@@ -53,10 +53,10 @@ bot.on('message', (msg) => {
             bot.sendMessage(msg.chat.id, `Predicted Close: ${res[2]}`);
             bot.sendMessage(msg.chat.id, `Predicted Low: ${res[3]}`);
 
-            bot.sendMessage(msg.chat.id, `Please Click this <a href="#">LINK</a> for more details`);
+            bot.sendMessage(msg.chat.id, `Please Click this link for more details`);
             let link = `https://tradednn.herokuapp.com/api/prediction/${d[0].split('/')[2] / 2021}/${d[0].split('/')[1] / 12}/${d[0].split('/')[0] / 31}/${d[1].split(':')[0] / 24}/${d[1].split(':')[1] / 60}`;
             console.log(link);
-            bot.sendMessage(msg.chat.id, `[URL] (${link})`);
+            bot.sendMessage(msg.chat.id, `[${link}]`);
         });        
 
         state = 0;
