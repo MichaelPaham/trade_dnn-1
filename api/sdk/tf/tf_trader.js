@@ -11,6 +11,7 @@ async function tf_predict(dt){
         predict = model.predict(
           sample
         );
+        
         return predict.dataSync();
 
         // console.log(predict.dataSync());

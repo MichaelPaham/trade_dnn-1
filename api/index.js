@@ -11,8 +11,8 @@ let state = 0;
 
 bot.onText(/\/trade_dnn/, (msg) => {
     state = 1;
-    bot.sendMessage(msg.chat.id, 'type /predict to generate prediction +-3 hour');
-    bot.sendMessage(msg.chat.id, 'type /history to see the history 5 hour ago');        
+    bot.sendMessage(msg.chat.id, 'type /predict to generate prediction +-5 minutes');
+    bot.sendMessage(msg.chat.id, 'type /history to see the history 10 minutes ago');        
 });
 
 bot.onText(/\/help/, (msg) => {
@@ -52,7 +52,14 @@ bot.on('message', (msg) => {
             bot.sendMessage(msg.chat.id, `Predicted High: ${res[1]}`);
             bot.sendMessage(msg.chat.id, `Predicted Close: ${res[2]}`);
             bot.sendMessage(msg.chat.id, `Predicted Low: ${res[3]}`);
-        });
+
+            bot.sendMessage(msg.chat.id, `Please Click this <a href="#">LINK</a> for more details`);
+            let link = `https://tradednn.herokuapp.com/api/prediction/${d[0].split('/')[2] / 2021}/${d[0].split('/')[1] / 12}/${d[0].split('/')[0] / 31}/${d[1].split(':')[0] / 24}/${d[1].split(':')[1] / 60}`;
+            console.log(link);
+            bot.sendMessage(msg.chat.id, `[URL] (${link})`);
+        });        
+
+        state = 0;
         // https://sweetcode.io/nodejs-highcharts-sweetcode/
     }else if(state == 4){
         bot.sendMessage(msg.chat.id, "Getting History 10 Minutes Ago"); 
@@ -70,6 +77,21 @@ async function test(){
     res = await tf_trader.tf_predict(sample);
     console.log(res);
 }
+
+
+/* load page*/
+r.get('/prediction/:y/:m/:d/:h/:M', function(req, res, next) {
+    data = {
+        "y" : req.params.y, 
+        "m" : req.params.m, 
+        "d" : req.params.d, 
+        "h" : req.params.h, 
+        "M" : req.params.M, 
+    }
+    res.render('predict', {data: data});
+});
+
+
 module.exports = r;
 
 
