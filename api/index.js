@@ -12,8 +12,7 @@ let state = 0;
 bot.onText(/\/trade_dnn/, (msg) => {
     state = 1;
     bot.sendMessage(msg.chat.id, 'type /predict to generate prediction +-3 hour');
-    bot.sendMessage(msg.chat.id, 'type /history to see the history 5 hour ago');
-        
+    bot.sendMessage(msg.chat.id, 'type /history to see the history 5 hour ago');        
 });
 
 bot.onText(/\/help/, (msg) => {
@@ -60,6 +59,7 @@ bot.on('message', (msg) => {
     }else if(state == 0 || state == 2){
         bot.sendMessage(msg.chat.id, "Type /trade_dnn"); 
     }
+    console.log(msg)
 });
 
 
@@ -67,13 +67,9 @@ bot.on('message', (msg) => {
 
 async function test(){
     let sample = [0.9995052, 0.83333333, 0.41935484, 0.125, 0.85];
-    
     res = await tf_trader.tf_predict(sample);
-
     console.log(res);
 }
-// test();
-
 module.exports = r;
 
 
