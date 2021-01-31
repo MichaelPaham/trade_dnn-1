@@ -7,6 +7,10 @@ const TelegramBot = require('node-telegram-bot-api');
 const token = '1561164530:AAFiy-Y2GQw1qTwSDi6ZD9oRkcOBjmOdFHc'
 const bot = new TelegramBot(token, {polling: true});
 
+var moment = require("moment");
+
+
+let baseurl = 'http://localhost:3000'; //'https://tradednn.herokuapp.com'
 let state = 0;
 
 bot.onText(/\/trade_dnn/, (msg) => {
@@ -22,13 +26,9 @@ bot.onText(/\/help/, (msg) => {
 
 bot.onText(/\/predict/, (msg) => {
     state = 3;
-    bot.sendMessage(msg.chat.id, "Type /date");     
+    bot.sendMessage(msg.chat.id, "Input Date (YYYY-MM-DD|HH:mm)");   
 });
 
-bot.onText(/\/date/, (msg) => {
-    state = 5;
-    bot.sendMessage(msg.chat.id, "Input Date (dd/mm/yy-hh:MM)");      
-});
 
 bot.onText(/\/history/, (msg) => {
     state = 4;
@@ -39,34 +39,33 @@ bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text.toString().toLowerCase();
     
-    if(state == 5){
-        const d = text.split('-');
+    if(state == 3){
+        const d = text.split('|');
         bot.sendMessage(msg.chat.id, 'Getting Prediction of ('+ text + ')'); 
-        let sample = [
-            d[0].split('/')[2] / 2021, d[0].split('/')[1] / 12, d[0].split('/')[0] / 31,
+        
+        let date_ = [
+            d[0].split('-')[0] / 2021, d[0].split('-')[1] / 12, d[0].split('-')[2] / 31,
             d[1].split(':')[0] / 24, d[1].split(':')[1] / 60
         ];
-        tf_trader.tf_predict(sample).then((res)=>{
+        tf_trader.tf_predict(date_).then((res)=>{
             console.log(res);
             bot.sendMessage(msg.chat.id, `Predicted Open: ${res[0]}`);
             bot.sendMessage(msg.chat.id, `Predicted High: ${res[1]}`);
             bot.sendMessage(msg.chat.id, `Predicted Close: ${res[2]}`);
             bot.sendMessage(msg.chat.id, `Predicted Low: ${res[3]}`);
+            
+            let link = `${baseurl}/api/prediction/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
+            bot.sendMessage(msg.chat.id, `For Details: ${link}`);
+        });       
 
-            bot.sendMessage(msg.chat.id, `Please Click this link for more details`);
-            let link = `https://tradednn.herokuapp.com/api/prediction/${d[0].split('/')[2] / 2021}/${d[0].split('/')[1] / 12}/${d[0].split('/')[0] / 31}/${d[1].split(':')[0] / 24}/${d[1].split(':')[1] / 60}`;
-            console.log(link);
-            bot.sendMessage(msg.chat.id, `[${link}]`);
-        });        
-
-        state = 0;
+        state = 1;
         // https://sweetcode.io/nodejs-highcharts-sweetcode/
     }else if(state == 4){
         bot.sendMessage(msg.chat.id, "Getting History 10 Minutes Ago"); 
     }else if(state == 0 || state == 2){
         bot.sendMessage(msg.chat.id, "Type /trade_dnn"); 
     }
-    console.log(msg)
+    // console.log(msg)
 });
 
 
@@ -80,16 +79,20 @@ async function test(){
 
 
 /* load page*/
-r.get('/prediction/:y/:m/:d/:h/:M', function(req, res, next) {
-    data = {
-        "y" : req.params.y, 
-        "m" : req.params.m, 
-        "d" : req.params.d, 
-        "h" : req.params.h, 
-        "M" : req.params.M, 
-    }
-    res.render('predict', {data: data});
+r.get('/prediction/:p/:y/:m/:d/:h/:M', function(req, res, next) {    
+    let d = new Date(
+        req.params.y, req.params.m, req.params.d, req.params.h, req.params.M
+    )
+    if(req.params.p == 'y'){
+        res.render('predict', {title: "Prediction"});
+    }else{
+        tf_trader.pred_json(d).then((jres)=>{
+            res.json(jres);
+        })
+    }    
 });
+
+
 
 
 module.exports = r;

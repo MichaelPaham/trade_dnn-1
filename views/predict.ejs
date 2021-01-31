@@ -1,14 +1,62 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= data.y %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <!-- <% dt = JSON.stringify(data) %> -->
-    
-    <h1>Requesting...</h1>
-    <!-- <p>Welcome to <%= data.y %></p> -->
-    
-  </body>
-</html>
+
+<% include ./header %>
+	 	
+	<main class="flex-shrink-0">
+		<div class="container">
+			<div style="width:1000px">
+				<canvas id="chart"></canvas>
+			</div>
+		</div>
+	</main>
+
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" 
+			integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" 
+			crossorigin="anonymous"></script>
+	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	
+	<script src="https://cdn.jsdelivr.net/npm/luxon@1.24.1"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0-beta.9/dist/chart.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1"></script>
+
+	<script type='text/javascript' src="/javascripts/chartjs-chart-financial.js"></script>
+
+	<script>
+		
+		
+		var ctx = document.getElementById('chart').getContext('2d');
+		ctx.canvas.width = 1000;
+		ctx.canvas.height = 250;
+
+		ftrade();
+
+		async function ftrade(){
+			var trade_data = [];
+			$.get('/api/prediction/n/2020/04/14/14/28').done(function(dt){
+				$.each(dt, function(i, val){
+					trade_data.push({
+						't': val.date,//luxon.DateTime.fromRFC2822(val.date).ts,
+						'c': val.trade_data[0].toString(),
+						'h': val.trade_data[1].toString(),
+						'l': val.trade_data[2].toString(),
+						'o': val.trade_data[3].toString()
+					});	
+					if((i+1)==dt.length){
+						var chart = new Chart(ctx, {
+							type: 'candlestick',
+							data: {
+								datasets: [{
+									label: 'DNN TRADE',
+									data: trade_data
+								}]
+							}
+						});
+					}
+				});
+			});			
+		}
+			
+	</script>
+
+
+<% include ./footer %>
