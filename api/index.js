@@ -9,8 +9,13 @@ const bot = new TelegramBot(token, {polling: true});
 
 var moment = require("moment");
 
+let baseurl = 'http://localhost:3000';
+let prod = true;
 
-let baseurl = 'http://localhost:3000'; //'https://tradednn.herokuapp.com'
+if(prod == true){
+    baseurl = 'https://tradednn.herokuapp.com';
+}
+
 let state = 0;
 
 bot.onText(/\/trade_dnn/, (msg) => {
