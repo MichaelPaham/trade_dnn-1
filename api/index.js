@@ -43,7 +43,7 @@ bot.onText(/\/history/, (msg) => {
 bot.on('message', (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text.toString().toLowerCase();
-    
+
     if(state == 3){
         const d = text.split('|');
         bot.sendMessage(msg.chat.id, 'Getting Prediction of ('+ text + ')'); 
@@ -52,6 +52,7 @@ bot.on('message', (msg) => {
             d[0].split('-')[0] / 2021, d[0].split('-')[1] / 12, d[0].split('-')[2] / 31,
             d[1].split(':')[0] / 24, d[1].split(':')[1] / 60
         ];
+
         tf_trader.tf_predict(date_).then((res)=>{
             console.log(res);
             bot.sendMessage(msg.chat.id, `Predicted Open: ${res[0]}`);
@@ -59,11 +60,14 @@ bot.on('message', (msg) => {
             bot.sendMessage(msg.chat.id, `Predicted Close: ${res[2]}`);
             bot.sendMessage(msg.chat.id, `Predicted Low: ${res[3]}`);
             
+            
             let link = `${baseurl}/api/prediction/y/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
+            var alias = `trade-dnn-prediction-${msg.date}`
+            console.log(alias);
             
             TinyURL.shortenWithAlias({
                 'url': link, 
-                'alias': `trade-dnn-prediction-${new Date().getTime()}`
+                'alias': alias
             }).then(function(res) {
                 bot.sendMessage(msg.chat.id, `For Details: ${res}`);
             }, function(err) {
@@ -79,7 +83,7 @@ bot.on('message', (msg) => {
     }else if(state == 0 || state == 2){
         bot.sendMessage(msg.chat.id, "Type /trade_dnn"); 
     }
-    // console.log(msg)
+    console.log(msg)
 });
 
 
