@@ -47,7 +47,7 @@ async function pred_json(dt){
           sample
         );
         json_data.push({
-          "date": luxon.DateTime.fromRFC2822(pdate1).ts, //pdate1,
+          "date": luxon.DateTime.fromRFC2822(pdate1).ts, //pdate1, luxon.DateTime.fromRFC2822(pdate1).ts
           "trade_data":predict.dataSync()
         });
       }

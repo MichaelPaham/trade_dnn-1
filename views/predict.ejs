@@ -76,15 +76,26 @@
 				</div>
 			</div>
 
-
-			
 			<div class="row" style="margin-top: 30px;">
+				<div class="col-md-5">
+				  <div style="width:100%; height: 50%;">
+					  <canvas id="linechart"></canvas>
+				  </div>
+				</div>
+				<div class="col-md-7">
+					<div style="width:100%; height: 50%;">
+						<canvas id="chart"></canvas>
+					</div>
+				  </div>
+			  </div>
+			
+			<!-- <div class="row" style="margin-top: 30px;">
 			  <div class="col-md">
 				<div style="width:100%; height: 50%;">
 					<canvas id="chart"></canvas>
 				</div>
 			  </div>
-			</div>
+			</div> -->
 
 
 			<div class="row" style="margin-top: 30px;">
@@ -118,7 +129,7 @@
 						</table>
 					  </div>
 				</div>
-			  </div>
+			</div>
 
 
 		  </div>
@@ -140,12 +151,16 @@
 		
 		var ctx = document.getElementById('chart').getContext('2d');
 		ctx.canvas.width = 1000;
-		ctx.canvas.height = 250;
+		ctx.canvas.height = 400;
 
 		ftrade();
 
 		async function ftrade(){
 			var trade_data = [];
+			var dlabel = [];
+			var olbl = [];
+			var clbl = [];
+
 			var ct = '';
 			$.get('/api/prediction/n/2020/04/14/14/28').done(function(dt){
 				$.each(dt, function(i, val){
@@ -155,7 +170,8 @@
 						'h': val.trade_data[1].toString(),
 						'l': val.trade_data[2].toString(),
 						'o': val.trade_data[3].toString()
-					});	
+					});						
+
 					ct = ct + `
 						<tr>
 							<td>${val.date}</td>
@@ -165,6 +181,10 @@
 							<td>${val.trade_data[2].toFixed(8)}</td>
 						</tr>
 					`;
+
+					dlabel.push(i);
+					olbl.push(val.trade_data[3].toString());
+					clbl.push(val.trade_data[0].toString());
 					
 					if((i+1)==dt.length){
 						var chart = new Chart(ctx, {
@@ -178,7 +198,47 @@
 						});
 
 						$("#hist_table tbody").empty();
-						$("#hist_table tbody").append(ct);						
+						$("#hist_table tbody").append(ct);		
+						
+						var config = {
+							type: 'line',
+							data: {
+								labels: dlabel,
+								datasets: [{
+									label: 'Open',
+									backgroundColor: 'red',
+									borderColor: 'red',
+									fill: false,
+									data: olbl,
+								}, {
+									label: 'Close',
+									backgroundColor: 'blue',
+									borderColor: 'blue',
+									fill: false,
+									data: clbl,
+								}]
+							},
+							options: {
+								responsive: true,
+								title: {
+									display: true,
+									text: 'Chart.js Line Chart - Logarithmic'
+								},
+								scales: {
+									xAxes: [{
+										display: true,
+									}],
+									yAxes: [{
+										display: true,
+										type: 'logarithmic',
+									}]
+								}
+							}
+						};
+						var myLineChart = new Chart(
+							document.getElementById('linechart').getContext('2d'),
+							config
+						);
 					}
 					if(i == 10){
 						$('#tnow_o').text(val.trade_data[3].toFixed(8).toString());
@@ -206,7 +266,9 @@
 				$(this).toggle($(this).text().toLowerCase().indexOf(txt) > -1);
 			})
 		})
-			
+		
+	
+
 	</script>
 
 
