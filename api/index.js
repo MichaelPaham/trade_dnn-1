@@ -46,37 +46,42 @@ bot.on('message', (msg) => {
 
     if(state == 3){
         const d = text.split('|');
-        bot.sendMessage(msg.chat.id, 'Getting Prediction of ('+ text + ')'); 
-        
-        let date_ = [
-            d[0].split('-')[0] / 2021, d[0].split('-')[1] / 12, d[0].split('-')[2] / 31,
-            d[1].split(':')[0] / 24, d[1].split(':')[1] / 60
-        ];
 
-        tf_trader.tf_predict(date_).then((res)=>{
-            console.log(res);
-            bot.sendMessage(msg.chat.id, `Predicted Open: ${res[0]}`);
-            bot.sendMessage(msg.chat.id, `Predicted High: ${res[1]}`);
-            bot.sendMessage(msg.chat.id, `Predicted Close: ${res[2]}`);
-            bot.sendMessage(msg.chat.id, `Predicted Low: ${res[3]}`);
+        if(d.length == 2 ){
+            bot.sendMessage(msg.chat.id, 'Getting Prediction of ('+ text + ')'); 
             
-            
-            let link = `${baseurl}/api/prediction/y/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
-            var alias = `trade-dnn-prediction-${msg.date}`
-            console.log(alias);
-            
-            TinyURL.shortenWithAlias({
-                'url': link, 
-                'alias': alias
-            }).then(function(slink) {
-                bot.sendMessage(msg.chat.id, `For Details: ${slink}`);
-            }, function(err) {
-                console.log(err)
-            });
-            
-        });       
+            let date_ = [
+                d[0].split('-')[0] / 2021, d[0].split('-')[1] / 12, d[0].split('-')[2] / 31,
+                d[1].split(':')[0] / 24, d[1].split(':')[1] / 60
+            ];
 
-        state = 1;
+            tf_trader.tf_predict(date_).then((res)=>{
+                console.log(res);
+                bot.sendMessage(msg.chat.id, `Predicted Open: ${res[0]}`);
+                bot.sendMessage(msg.chat.id, `Predicted High: ${res[1]}`);
+                bot.sendMessage(msg.chat.id, `Predicted Close: ${res[2]}`);
+                bot.sendMessage(msg.chat.id, `Predicted Low: ${res[3]}`);
+                
+                
+                let link = `${baseurl}/api/prediction/y/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
+                var alias = `trade-dnn-prediction-${msg.date}`
+                console.log(alias);
+                
+                TinyURL.shortenWithAlias({
+                    'url': link, 
+                    'alias': alias
+                }).then(function(slink) {
+                    bot.sendMessage(msg.chat.id, `For Details: ${slink}`);
+                }, function(err) {
+                    console.log(err)
+                });
+                
+            });       
+
+            state = 1;
+        }else{
+            bot.sendMessage(msg.chat.id, 'Please Follows Input Date Format (YYYY-MM-DD|HH:mm) for example: 2020-01-31|17:21'); 
+        }
         // https://sweetcode.io/nodejs-highcharts-sweetcode/
     }else if(state == 4){
         bot.sendMessage(msg.chat.id, "Getting History 10 Minutes Ago"); 
