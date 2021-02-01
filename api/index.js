@@ -64,7 +64,7 @@ bot.on('message', (msg) => {
                 
                 
                 let link = `${baseurl}/api/prediction/y/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
-                var alias = `trade-dnn-prediction-${msg.date}`
+                var alias = `trade-dnn-prediction`
                 console.log(alias);
                 
                 TinyURL.shortenWithAlias({
@@ -114,6 +114,18 @@ r.get('/prediction/:p/:y/:m/:d/:h/:M', function(req, res, next) {
 });
 
 
+// link = 'http://localhost:3000/api/prediction/y/2020/06/22/07/28';
+// alias = 'trade-dnn-prediction-' + new Date().getTime();
+// console.log(alias);
+
+// TinyURL.shortenWithAlias({
+//     'url': link, 
+//     'alias': alias.toString()
+// }).then(function(slink) {
+//    console.log(slink)
+// }, function(err) {
+//     console.log(err)
+// });
 
 
 module.exports = r;
