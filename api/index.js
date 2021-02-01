@@ -64,13 +64,9 @@ bot.on('message', (msg) => {
                 
                 
                 let link = `${baseurl}/api/prediction/y/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
-                var alias = `trade-dnn-prediction`
-                console.log(alias);
+                var alias = `trade-dnn-prediction`;
                 
-                TinyURL.shortenWithAlias({
-                    'url': link, 
-                    'alias': alias
-                }).then(function(slink) {
+                TinyURL.shorten(link).then(function(slink) {
                     bot.sendMessage(msg.chat.id, `For Details: ${slink}`);
                 }, function(err) {
                     console.log(err)
@@ -114,18 +110,13 @@ r.get('/prediction/:p/:y/:m/:d/:h/:M', function(req, res, next) {
 });
 
 
-// link = 'http://localhost:3000/api/prediction/y/2020/06/22/07/28';
-// alias = 'trade-dnn-prediction-' + new Date().getTime();
-// console.log(alias);
+link = 'http://localhost:3000/api/prediction/y/2020/06/30/07/28';
 
-// TinyURL.shortenWithAlias({
-//     'url': link, 
-//     'alias': alias.toString()
-// }).then(function(slink) {
-//    console.log(slink)
-// }, function(err) {
-//     console.log(err)
-// });
+TinyURL.shorten(link).then(function(slink) {
+   console.log(slink)
+}, function(err) {
+    console.log(err)
+});
 
 
 module.exports = r;
