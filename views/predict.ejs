@@ -3,26 +3,124 @@
 	 	
 	<main class="flex-shrink-0">
 		<div class="container">
-			<div style="width:1000px">
-				<canvas id="chart"></canvas>
+
+			<div class="row row-cols-1 row-cols-md-3 mb-3 text-center" style="margin-top: 30px;">
+				<div class="col">
+					<div class="card mb-4 shadow-sm">
+					<div class="card-header">
+						<h5 class="my-0 fw-normal">-1 Minute</h5>
+					</div>
+					<div class="card-body">
+						<h4 class="card-title pricing-card-title">Open / <small class="text-muted"> High </small></h4>
+						<h5 class="card-title pricing-card-title">( 
+							<span id="tmo_o">0.0000</span> / 
+							<small class="text-muted">
+								<span  id="tmo_h">0.0000</span> )
+							</small>
+						</h5>
+						<h4 class="card-title pricing-card-title">Close / <small class="text-muted"> Low </small></h4>
+						<h5 class="card-title pricing-card-title">( 
+							<span id="tmo_c">0.0000</span> / 
+							<small class="text-muted">
+								<span  id="tmo_l">0.0000</span> )
+							</small>
+						</h5>
+					</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card mb-4 shadow-sm">
+					<div class="card-header">
+						<h5 class="my-0 fw-normal">Now</h5>
+					</div>
+					<div class="card-body">
+						<h4 class="card-title pricing-card-title">Open / <small class="text-muted"> High </small></h4>
+						<h5 class="card-title pricing-card-title">( 
+							<span id="tnow_o">0.0000</span> / 
+							<small class="text-muted">
+								<span  id="tnow_h">0.0000</span> )
+							</small>
+						</h5>
+						<h4 class="card-title pricing-card-title">Close / <small class="text-muted"> Low </small></h4>
+						<h5 class="card-title pricing-card-title">( 
+							<span id="tnow_c">0.0000</span> / 
+							<small class="text-muted">
+								<span  id="tnow_l">0.0000</span> )
+							</small>
+						</h5>
+					</div>
+					</div>
+				</div>
+				<div class="col">
+					<div class="card mb-4 shadow-sm">
+					<div class="card-header">
+						<h5 class="my-0 fw-normal">+1 Minute</h5>
+					</div>
+					<div class="card-body">
+						<h4 class="card-title pricing-card-title">Open / <small class="text-muted"> High </small></h4>
+						<h5 class="card-title pricing-card-title">( 
+							<span id="tpo_o">0.0000</span> / 
+							<small class="text-muted">
+								<span  id="tpo_h">0.0000</span> )
+							</small>
+						</h5>
+						<h4 class="card-title pricing-card-title">Close / <small class="text-muted"> Low </small></h4>
+						<h5 class="card-title pricing-card-title">( 
+							<span id="tpo_c">0.0000</span> / 
+							<small class="text-muted">
+								<span  id="tpo_l">0.0000</span> )
+							</small>
+						</h5>
+					</div>
+					</div>
+				</div>
 			</div>
-		</div>
+
+			<div class="row" style="margin-top: 30px;">
+			  <div class="col-md">
+				<div style="width:100%; height: 50%;">
+					<canvas id="chart"></canvas>
+				</div>
+			  </div>
+			</div>
+
+			<div class="row" style="margin-top: 30px;">
+				<div class="col-md" style="width: 100%;">
+					<div class="table-responsive">
+						<table class="table table-striped table-sm" id = "hist_table">
+						  <thead>
+							<tr>
+							  <th>Timestamp</th>
+							  <th>Open</th>
+							  <th>High</th>
+							  <th>Close</th>
+							  <th>Low</th>
+							</tr>
+						  </thead>
+						  <tbody>
+							  
+						  </tbody>
+						</table>
+					  </div>
+				</div>
+			  </div>
+
+
+		  </div>
 	</main>
 
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js" 
-			integrity="sha512-d9xgZrVZpmmQlfonhQUvTR7lMPtO7NkZMkA0ABN3PHCbKA5nqylQ/yWlFAyY6hYgdF1Qh6nYiuADWwKB4C2WSw==" 
-			crossorigin="anonymous"></script>
-	<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script type='text/javascript' src="/javascripts/Chart.min.js"></script>
+	<script type='text/javascript' src="/javascripts/jquery-1.11.0.min.js"></script>
 	
-	<script src="https://cdn.jsdelivr.net/npm/luxon@1.24.1"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0-beta.9/dist/chart.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@0.2.1"></script>
+	<script type='text/javascript' src="/javascripts/luxon@1.24.1"></script>
+	<script type='text/javascript' src="/javascripts/chart.js"></script>
+	<script type='text/javascript'type='text/javascript' src="/javascripts/chartjs-adapter-luxon@0.2.1"></script>
 
 	<script type='text/javascript' src="/javascripts/chartjs-chart-financial.js"></script>
 
 	<script>
-		
+		// https://www.mql5.com/en/trading
 		
 		var ctx = document.getElementById('chart').getContext('2d');
 		ctx.canvas.width = 1000;
@@ -32,6 +130,7 @@
 
 		async function ftrade(){
 			var trade_data = [];
+			var ct = '';
 			$.get('/api/prediction/n/2020/04/14/14/28').done(function(dt){
 				$.each(dt, function(i, val){
 					trade_data.push({
@@ -41,6 +140,16 @@
 						'l': val.trade_data[2].toString(),
 						'o': val.trade_data[3].toString()
 					});	
+					ct = ct + `
+						<tr>
+							<td>${val.date}</td>
+							<td>${val.trade_data[3].toFixed(8)}</td>
+							<td>${val.trade_data[2].toFixed(8)}</td>
+							<td>${val.trade_data[0].toFixed(8)}</td>
+							<td>${val.trade_data[2].toFixed(8)}</td>
+						</tr>
+					`;
+					
 					if((i+1)==dt.length){
 						var chart = new Chart(ctx, {
 							type: 'candlestick',
@@ -51,6 +160,26 @@
 								}]
 							}
 						});
+
+
+						$("#hist_table tbody").empty();
+						$("#hist_table tbody").append(ct);						
+					}
+					if(i == 10){
+						$('#tnow_o').text(val.trade_data[3].toFixed(8).toString());
+						$('#tnow_h').text(val.trade_data[1].toFixed(8).toString());
+						$('#tnow_c').text(val.trade_data[0].toFixed(8).toString());
+						$('#tnow_l').text(val.trade_data[2].toFixed(8).toString());
+					}else if(i == 9){
+						$('#tmo_o').text(val.trade_data[3].toFixed(8).toString());
+						$('#tmo_h').text(val.trade_data[1].toFixed(8).toString());
+						$('#tmo_c').text(val.trade_data[0].toFixed(8).toString());
+						$('#tmo_l').text(val.trade_data[2].toFixed(8).toString());
+					} else if(i == 11){
+						$('#tpo_o').text(val.trade_data[3].toFixed(8).toString());
+						$('#tpo_h').text(val.trade_data[1].toFixed(8).toString());
+						$('#tpo_c').text(val.trade_data[0].toFixed(8).toString());
+						$('#tpo_l').text(val.trade_data[2].toFixed(8).toString());
 					}
 				});
 			});			

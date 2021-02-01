@@ -59,7 +59,7 @@ bot.on('message', (msg) => {
             bot.sendMessage(msg.chat.id, `Predicted Close: ${res[2]}`);
             bot.sendMessage(msg.chat.id, `Predicted Low: ${res[3]}`);
             
-            let link = `${baseurl}/api/prediction/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
+            let link = `${baseurl}/api/prediction/y/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
             bot.sendMessage(msg.chat.id, `For Details: ${link}`);
         });       
 
