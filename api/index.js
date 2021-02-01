@@ -7,7 +7,7 @@ const TelegramBot = require('node-telegram-bot-api');
 const token = '1561164530:AAFiy-Y2GQw1qTwSDi6ZD9oRkcOBjmOdFHc'
 const bot = new TelegramBot(token, {polling: true});
 
-var moment = require("moment");
+var TinyURL = require('tinyurl');
 
 let baseurl = 'http://localhost:3000';
 let prod = true;
@@ -60,7 +60,16 @@ bot.on('message', (msg) => {
             bot.sendMessage(msg.chat.id, `Predicted Low: ${res[3]}`);
             
             let link = `${baseurl}/api/prediction/y/${d[0].split('-')[0]}/${d[0].split('-')[1]}/${d[0].split('-')[0]}/${d[1].split(':')[0]}/${d[1].split(':')[1]}`;
-            bot.sendMessage(msg.chat.id, `For Details: ${link}`);
+            
+            TinyURL.shortenWithAlias({
+                'url': link, 
+                'alias': `trade-dnn-prediction-${new Date().getTime()}`
+            }).then(function(res) {
+                bot.sendMessage(msg.chat.id, `For Details: ${res}`);
+            }, function(err) {
+                console.log(err)
+            });
+            
         });       
 
         state = 1;
@@ -72,8 +81,6 @@ bot.on('message', (msg) => {
     }
     // console.log(msg)
 });
-
-
 
 
 async function test(){
