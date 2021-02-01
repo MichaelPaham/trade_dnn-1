@@ -68,8 +68,8 @@ bot.on('message', (msg) => {
             TinyURL.shortenWithAlias({
                 'url': link, 
                 'alias': alias
-            }).then(function(res) {
-                bot.sendMessage(msg.chat.id, `For Details: ${res}`);
+            }).then(function(slink) {
+                bot.sendMessage(msg.chat.id, `For Details: ${slink}`);
             }, function(err) {
                 console.log(err)
             });
