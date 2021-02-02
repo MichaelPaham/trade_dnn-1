@@ -8,7 +8,7 @@
 				<div class="col">
 					<div class="card mb-4 shadow-sm">
 					<div class="card-header">
-						<h5 class="my-0 fw-normal">-1 Minute</h5>
+						<h5 class="my-0 fw-normal" id='t1'>-</h5>
 					</div>
 					<div class="card-body">
 						<h4 class="card-title pricing-card-title">Open / <small class="text-muted"> High </small></h4>
@@ -31,7 +31,7 @@
 				<div class="col">
 					<div class="card mb-4 shadow-sm">
 					<div class="card-header">
-						<h5 class="my-0 fw-normal">Now</h5>
+						<h5 class="my-0 fw-normal" id='t2'>-</h5>
 					</div>
 					<div class="card-body">
 						<h4 class="card-title pricing-card-title">Open / <small class="text-muted"> High </small></h4>
@@ -54,7 +54,7 @@
 				<div class="col">
 					<div class="card mb-4 shadow-sm">
 					<div class="card-header">
-						<h5 class="my-0 fw-normal">+1 Minute</h5>
+						<h5 class="my-0 fw-normal" id='t3'>-</h5>
 					</div>
 					<div class="card-body">
 						<h4 class="card-title pricing-card-title">Open / <small class="text-muted"> High </small></h4>
@@ -148,6 +148,11 @@
 	<script>
 		// https://www.mql5.com/en/trading
 		// http://localhost:3000/api/prediction/y/2020/06/22/07/28
+
+		const path = window.location.pathname;
+		const st = path.split('/')[4];
+		const path_date = `${path.split('/')[5]}/${path.split('/')[6]}/${path.split('/')[7]}/${path.split('/')[8]}/${path.split('/')[9]}`;
+
 		
 		var ctx = document.getElementById('chart').getContext('2d');
 		ctx.canvas.width = 1000;
@@ -162,7 +167,7 @@
 			var clbl = [];
 
 			var ct = '';
-			$.get('/api/prediction/n/2020/04/14/14/28').done(function(dt){
+			$.get(`/api/prediction/n/${st}/${path_date}`).done(function(dt){
 				$.each(dt, function(i, val){
 					trade_data.push({
 						't': val.date,//luxon.DateTime.fromRFC2822(val.date).ts,
@@ -258,6 +263,16 @@
 					}
 				});
 			});			
+			
+			if(st == 1){
+				$("#t1").text("-1 Minute");
+				$("#t2").text("Now");
+				$("#t3").text("+1 Minute");
+			}if(st == 2){
+				$("#t1").text("-2 Minute");
+				$("#t2").text("-1 Minute");
+				$("#t3").text("Now");
+			}
 		}
 
 		$("#filters").on('keydown', function(){

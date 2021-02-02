@@ -21,12 +21,15 @@ async function tf_predict(dt){
     } 
 }
 
-async function pred_json(dt){
+async function pred_json(dt, st){
   try{
       const path = 'https://raw.githubusercontent.com/zendi014/trade_dnn/main/public/ex_model/model.json';
       const model = await tf.loadGraphModel(path);
 
       let idx = 10;
+      if(st == '2'){
+        idx = 30
+      }
       let json_data = []
       
       let pred_date = moment(dt, 'YYYY/MM/DD HH:mm:ss').format('YYYY-MM-DD HH:mm:ss');
@@ -52,26 +55,27 @@ async function pred_json(dt){
         });
       }
 
-
-      for(i= (-idx); i<=0; i++){
-          pdate2 = moment(pred_date).add(i, 'minutes').format('YYYY-MM-DD HH:mm'); 
-          sample = tf.tensor2d(
-            [
-              moment(pdate2).year() / 2021, 
-              moment(pdate2).month() / 12, 
-              moment(pdate2).day() / 31,
-              moment(pdate2).hour() / 24, 
-              moment(pdate2).minutes() / 60
-            ], 
-            [1, 5]
-        );
-        predict = model.predict(
-          sample
-        );
-        json_data.push({
-          "date": luxon.DateTime.fromRFC2822(pdate2).ts, //pdate1,,
-          "trade_data":predict.dataSync()
-        });
+      if(st == '1'){
+          for(i= (-idx); i<=0; i++){
+              pdate2 = moment(pred_date).add(i, 'minutes').format('YYYY-MM-DD HH:mm'); 
+              sample = tf.tensor2d(
+                [
+                  moment(pdate2).year() / 2021, 
+                  moment(pdate2).month() / 12, 
+                  moment(pdate2).day() / 31,
+                  moment(pdate2).hour() / 24, 
+                  moment(pdate2).minutes() / 60
+                ], 
+                [1, 5]
+            );
+            predict = model.predict(
+              sample
+            );
+            json_data.push({
+              "date": luxon.DateTime.fromRFC2822(pdate2).ts, //pdate1,,
+              "trade_data":predict.dataSync()
+            });
+          }
       }
 
       return json_data;
