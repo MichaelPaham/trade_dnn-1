@@ -14,6 +14,7 @@
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "express-session": "^1.17.1",
+    "heroku-self-ping": "^2.0.1",
     "http-errors": "~1.6.3",
     "luxon": "^1.25.0",
     "moment": "^2.29.1",
