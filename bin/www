@@ -8,6 +8,8 @@ var app = require('../app');
 var debug = require('debug')('trade-app:server');
 var http = require('http');
 
+var setidle = require('heroku-self-ping');
+
 /**
  * Get port from environment and store in Express.
  */
@@ -88,3 +90,6 @@ function onListening() {
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
 }
+
+
+setidle.default("https://tradednn.herokuapp.com/");
